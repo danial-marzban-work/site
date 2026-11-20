@@ -46,6 +46,11 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Archivo", "Inter", sans-serif;
   --font-script: "Playfair Display", Georgia, serif;
+  --font-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+
+  /* 3D scene palette */
+  --color-amber-glow: #b87333;
+  --color-caramel-beige: #e3c3a0;
 }
 
 :root {
@@ -88,10 +93,15 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: var(--color-background);
+    /* Fallback wash behind the WebGL scene: warm caramel-beige with a golden pool. */
+    background-color: var(--color-caramel-beige);
+    background-image:
+      radial-gradient(120% 90% at 62% 46%, #f7e6cd 0%, #e8cba6 38%, #c99b6d 72%, #b3835a 100%);
+    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 }
 
