@@ -3,8 +3,10 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import * as THREE from "three";
 import { Backdrop, GoldenGlow } from "./Backdrop";
+import { Beans } from "./Beans";
+import { IceCubes } from "./IceCubes";
 import { LatteMug } from "./LatteMug";
-import { usePrefersReducedMotion } from "./useMotionPreferences";
+import { useIsMobile, usePrefersReducedMotion } from "./useMotionPreferences";
 
 /**
  * Keeps the mug framed to the right of the hero copy on desktop and low on the
@@ -48,11 +50,12 @@ function Rig({ children, reduced }: { children: ReactNode; reduced: boolean }) {
 
 export function Scene() {
   const reduced = usePrefersReducedMotion();
+  const compact = useIsMobile();
 
   return (
     <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
       <Canvas
-        dpr={[1, 1.75]}
+        dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         camera={{ position: [0, 2.05, 8.2], fov: 32, near: 0.1, far: 80 }}
         frameloop={reduced ? "demand" : "always"}
@@ -105,7 +108,9 @@ export function Scene() {
 
           <Rig reduced={reduced}>
             <GoldenGlow />
+            <Beans reduced={reduced} compact={compact} />
             <LatteMug reduced={reduced} />
+            <IceCubes reduced={reduced} />
           </Rig>
         </Suspense>
       </Canvas>

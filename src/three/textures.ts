@@ -84,6 +84,47 @@ export function createLatteArtTexture(size = 512) {
   return texture;
 }
 
+/**
+ * Out-of-focus coffee bean. Near-camera beans are billboarded with this soft
+ * bokeh texture instead of a mesh, which reads as real depth of field for free.
+ */
+export function createBeanBokehTexture(size = 256) {
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+
+  ctx.translate(size / 2, size / 2);
+  ctx.rotate(-0.5);
+
+  // Soft body.
+  const body = ctx.createRadialGradient(0, 0, size * 0.04, 0, 0, size * 0.46);
+  body.addColorStop(0, "rgba(52,30,20,0.92)");
+  body.addColorStop(0.55, "rgba(58,34,22,0.72)");
+  body.addColorStop(0.82, "rgba(70,42,27,0.28)");
+  body.addColorStop(1, "rgba(70,42,27,0)");
+  ctx.fillStyle = body;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, size * 0.46, size * 0.32, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Blurred crease.
+  const crease = ctx.createLinearGradient(-size * 0.34, 0, size * 0.34, 0);
+  crease.addColorStop(0, "rgba(24,12,8,0)");
+  crease.addColorStop(0.5, "rgba(24,12,8,0.5)");
+  crease.addColorStop(1, "rgba(24,12,8,0)");
+  ctx.strokeStyle = crease;
+  ctx.lineWidth = size * 0.06;
+  ctx.beginPath();
+  ctx.moveTo(-size * 0.3, -size * 0.02);
+  ctx.quadraticCurveTo(0, size * 0.06, size * 0.3, -size * 0.02);
+  ctx.stroke();
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
 /** Soft radial falloff used for the golden glow and for steam puffs. */
 export function createSoftGlowTexture(size = 256) {
   const canvas = document.createElement("canvas");

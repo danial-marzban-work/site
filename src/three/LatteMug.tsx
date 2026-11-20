@@ -63,15 +63,15 @@ export function LatteMug({ reduced }: { reduced: boolean }) {
           />
         ) : (
           <MeshTransmissionMaterial
-            samples={4}
-            resolution={256}
+            samples={3}
+            resolution={192}
             transmission={1}
             thickness={0.3}
             roughness={0.025}
-            chromaticAberration={0.4}
+            chromaticAberration={0.12}
             anisotropicBlur={0.25}
-            distortion={0.08}
-            distortionScale={0.18}
+            distortion={0.06}
+            distortionScale={0.14}
             temporalDistortion={0.04}
             ior={1.45}
             color="#ffffff"
