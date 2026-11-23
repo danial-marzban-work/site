@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, type ReactNode } from "react";
+import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import * as THREE from "three";
@@ -51,14 +51,31 @@ function Rig({ children, reduced }: { children: ReactNode; reduced: boolean }) {
 export function Scene() {
   const reduced = usePrefersReducedMotion();
   const compact = useIsMobile();
+  const host = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(true);
+
+  // The scene only lives in the hero: stop the render loop entirely once it is
+  // scrolled away so the rest of the page (menu, cards) keeps full frame rate.
+  useEffect(() => {
+    const el = host.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      rootMargin: "160px",
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const frameloop = reduced ? "demand" : inView ? "always" : "never";
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+    <div ref={host} className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
       <Canvas
-        dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        dpr={compact ? [1, 1.3] : [1, 1.5]}
+        gl={{ antialias: true, alpha: true, stencil: false, powerPreference: "high-performance" }}
         camera={{ position: [0, 2.05, 8.2], fov: 32, near: 0.1, far: 80 }}
-        frameloop={reduced ? "demand" : "always"}
+        frameloop={frameloop}
         onCreated={({ gl }) => {
           gl.toneMappingExposure = 1.02;
         }}
@@ -71,7 +88,7 @@ export function Scene() {
           <pointLight position={[-3, 1.5, 3.5]} intensity={9} distance={14} color="#ffb066" />
 
           {/* Studio-style reflections: no external HDRI needed. */}
-          <Environment resolution={192} frames={1}>
+          <Environment resolution={compact ? 128 : 192} frames={1}>
             <color attach="background" args={["#2a1a12"]} />
             <Lightformer
               form="rect"
@@ -110,7 +127,7 @@ export function Scene() {
             <GoldenGlow />
             <Beans reduced={reduced} compact={compact} />
             <LatteMug reduced={reduced} />
-            <IceCubes reduced={reduced} />
+            <IceCubes reduced={reduced} compact={compact} />
           </Rig>
         </Suspense>
       </Canvas>

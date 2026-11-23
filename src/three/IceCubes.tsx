@@ -56,8 +56,6 @@ function IceCube({
             opacity={0.42}
             roughness={0.08}
             metalness={0}
-            clearcoat={1}
-            clearcoatRoughness={0.05}
             envMapIntensity={2.2}
           />
         ) : (
@@ -78,12 +76,13 @@ function IceCube({
   );
 }
 
-export function IceCubes({ reduced }: { reduced: boolean }) {
+export function IceCubes({ reduced, compact }: { reduced: boolean; compact: boolean }) {
   const mobile = useIsMobile();
+  const cubes = compact ? CUBES.slice(0, 3) : CUBES;
 
   return (
     <group>
-      {CUBES.map((cube, i) => (
+      {cubes.map((cube, i) => (
         <IceCube key={i} {...cube} reduced={reduced} mobile={mobile} />
       ))}
     </group>

@@ -56,8 +56,6 @@ export function LatteMug({ reduced }: { reduced: boolean }) {
             roughness={0.08}
             metalness={0}
             ior={1.45}
-            clearcoat={1}
-            clearcoatRoughness={0.05}
             envMapIntensity={2}
             side={THREE.DoubleSide}
           />
