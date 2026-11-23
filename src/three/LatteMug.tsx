@@ -4,6 +4,7 @@ import { MeshTransmissionMaterial } from "@react-three/drei";
 import * as THREE from "three";
 import { createLatteArtTexture } from "./textures";
 import { useIsMobile } from "./useMotionPreferences";
+import { useScrollProgress } from "./useScrollProgress";
 
 /**
  * Cross-section of the glass: outer wall up to the rim, then back down the inside,
@@ -32,6 +33,9 @@ const PROFILE = [
 
 export function LatteMug({ reduced }: { reduced: boolean }) {
   const group = useRef<THREE.Group>(null);
+  const baseRotation = useRef(0);
+  const scrollSpin = useRef(0);
+  const scroll = useScrollProgress();
   const isMobile = useIsMobile();
 
   const glassGeometry = useMemo(() => new THREE.LatheGeometry(PROFILE, 72), []);
@@ -40,7 +44,17 @@ export function LatteMug({ reduced }: { reduced: boolean }) {
   useFrame((state, delta) => {
     const g = group.current;
     if (!g) return;
-    if (!reduced) g.rotation.y += delta * 0.16;
+
+    const d = Math.min(delta, 0.05);
+    if (!reduced) baseRotation.current += d * 0.16;
+    // Scrolling turns the mug further, so the latte art sweeps into view.
+    scrollSpin.current = THREE.MathUtils.damp(
+      scrollSpin.current,
+      reduced ? 0 : scroll.current * 1.35,
+      3,
+      d,
+    );
+    g.rotation.y = baseRotation.current + scrollSpin.current;
     g.position.y = reduced ? 0 : Math.sin(state.clock.elapsedTime * 0.55) * 0.035;
   });
 

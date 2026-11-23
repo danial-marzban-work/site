@@ -7,6 +7,7 @@ import { Beans } from "./Beans";
 import { IceCubes } from "./IceCubes";
 import { LatteMug } from "./LatteMug";
 import { useIsMobile, usePrefersReducedMotion } from "./useMotionPreferences";
+import { useScrollProgress } from "./useScrollProgress";
 
 /**
  * Keeps the mug framed to the right of the hero copy on desktop and low on the
@@ -15,6 +16,8 @@ import { useIsMobile, usePrefersReducedMotion } from "./useMotionPreferences";
 function Rig({ children, reduced }: { children: ReactNode; reduced: boolean }) {
   const group = useRef<THREE.Group>(null);
   const pointer = useRef({ x: 0, y: 0 });
+  const spin = useRef(0);
+  const scroll = useScrollProgress();
   const { size, camera } = useThree();
   const isDesktop = size.width >= 1024;
 
@@ -31,18 +34,28 @@ function Rig({ children, reduced }: { children: ReactNode; reduced: boolean }) {
   useFrame((_, delta) => {
     const d = Math.min(delta, 0.05);
     const g = group.current;
+    // Scrolling the hero drifts the camera in and turns the scene a little.
+    const s = reduced ? 0 : scroll.current;
 
     if (g) {
       const targetX = isDesktop ? 1.42 : 0;
       const targetY = isDesktop ? 0.02 : -0.95;
       g.position.x = THREE.MathUtils.damp(g.position.x, targetX + pointer.current.x * 0.16, 4, d);
-      g.position.y = THREE.MathUtils.damp(g.position.y, targetY - pointer.current.y * 0.1, 4, d);
+      g.position.y = THREE.MathUtils.damp(
+        g.position.y,
+        targetY - pointer.current.y * 0.1 - s * 0.16,
+        4,
+        d,
+      );
+      spin.current = THREE.MathUtils.damp(spin.current, s * 0.42, 3, d);
+      g.rotation.y = spin.current;
+      g.scale.setScalar(THREE.MathUtils.damp(g.scale.x, 1 + s * 0.05, 4, d));
     }
 
     const cam = camera as THREE.PerspectiveCamera;
-    cam.position.z = THREE.MathUtils.damp(cam.position.z, isDesktop ? 8.2 : 11.2, 4, d);
-    cam.position.y = THREE.MathUtils.damp(cam.position.y, isDesktop ? 2.05 : 1.0, 4, d);
-    cam.lookAt(isDesktop ? 0.72 : 0, isDesktop ? 0.05 : -0.55, 0);
+    cam.position.z = THREE.MathUtils.damp(cam.position.z, (isDesktop ? 8.2 : 11.2) - s * 1.1, 4, d);
+    cam.position.y = THREE.MathUtils.damp(cam.position.y, (isDesktop ? 2.05 : 1.0) + s * 0.5, 4, d);
+    cam.lookAt(isDesktop ? 0.72 : 0, (isDesktop ? 0.05 : -0.55) + s * 0.3, 0);
   });
 
   return <group ref={group}>{children}</group>;
