@@ -87,6 +87,14 @@ export function Scene() {
           <directionalLight position={[4.5, 6, 5]} intensity={2.1} color="#ffd3a1" />
           <pointLight position={[-3, 1.5, 3.5]} intensity={9} distance={14} color="#ffb066" />
 
+          {/* Rim and cool fill separate the glass from the warm backdrop. */}
+          {!compact && (
+            <>
+              <directionalLight position={[-2.5, 3.5, -6]} intensity={1.7} color="#ffe2bb" />
+              <directionalLight position={[5, 1, -4]} intensity={0.5} color="#dce8ff" />
+            </>
+          )}
+
           {/* Studio-style reflections: no external HDRI needed. */}
           <Environment resolution={compact ? 128 : 192} frames={1}>
             <color attach="background" args={["#2a1a12"]} />
@@ -118,6 +126,31 @@ export function Scene() {
               color="#ffe6c4"
               position={[0, -4, 2]}
               scale={5}
+            />
+            {/* Narrow strip lights read as long, crisp specular streaks on glass. */}
+            <Lightformer
+              form="rect"
+              intensity={3.4}
+              color="#fff6e8"
+              position={[-2.6, 2.4, -6]}
+              scale={[0.7, 6, 1]}
+            />
+            <Lightformer
+              form="rect"
+              intensity={2.4}
+              color="#e9f1ff"
+              position={[3.4, 0.8, 4]}
+              scale={[0.6, 4.2, 1]}
+              rotation-y={-Math.PI / 5}
+            />
+            {/* Soft top light gives the rim a bright, continuous edge. */}
+            <Lightformer
+              form="rect"
+              intensity={1.8}
+              color="#fff0d8"
+              position={[0, 6, 0.5]}
+              scale={[5, 5, 1]}
+              rotation-x={-Math.PI / 2}
             />
           </Environment>
 

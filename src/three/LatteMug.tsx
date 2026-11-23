@@ -53,10 +53,11 @@ export function LatteMug({ reduced }: { reduced: boolean }) {
             color="#ffffff"
             transparent
             opacity={0.32}
-            roughness={0.08}
+            roughness={0.06}
             metalness={0}
             ior={1.45}
-            envMapIntensity={2}
+            envMapIntensity={2.6}
+            specularIntensity={1}
             side={THREE.DoubleSide}
           />
         ) : (
@@ -65,16 +66,19 @@ export function LatteMug({ reduced }: { reduced: boolean }) {
             resolution={192}
             transmission={1}
             thickness={0.3}
-            roughness={0.025}
-            chromaticAberration={0.12}
-            anisotropicBlur={0.25}
+            roughness={0.02}
+            chromaticAberration={0.2}
+            anisotropicBlur={0.32}
             distortion={0.06}
             distortionScale={0.14}
             temporalDistortion={0.04}
-            ior={1.45}
+            ior={1.46}
             color="#ffffff"
-            attenuationColor="#f0d3ae"
-            attenuationDistance={3}
+            attenuationColor="#f2d0a4"
+            attenuationDistance={2.2}
+            clearcoat={0.6}
+            clearcoatRoughness={0.06}
+            envMapIntensity={1.35}
             side={THREE.DoubleSide}
           />
         )}

@@ -53,22 +53,25 @@ function IceCube({
           <meshPhysicalMaterial
             color="#f2f7ff"
             transparent
-            opacity={0.42}
-            roughness={0.08}
+            opacity={0.44}
+            roughness={0.06}
             metalness={0}
-            envMapIntensity={2.2}
+            envMapIntensity={2.8}
           />
         ) : (
           <meshPhysicalMaterial
             color="#f4f8ff"
             transmission={0.96}
             thickness={size * 1.3}
-            roughness={0.05}
+            roughness={0.04}
             metalness={0}
             ior={1.31}
+            attenuationColor="#dcefff"
+            attenuationDistance={size * 2.4}
             clearcoat={1}
-            clearcoatRoughness={0.04}
-            envMapIntensity={1.8}
+            clearcoatRoughness={0.03}
+            envMapIntensity={2.4}
+            specularIntensity={1}
           />
         )}
       </RoundedBox>
