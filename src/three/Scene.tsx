@@ -6,6 +6,7 @@ import { Backdrop, GoldenGlow } from "./Backdrop";
 import { Beans } from "./Beans";
 import { IceCubes } from "./IceCubes";
 import { LatteMug } from "./LatteMug";
+import { Steam } from "./Steam";
 import { useIsMobile, usePrefersReducedMotion } from "./useMotionPreferences";
 import { useScrollProgress } from "./useScrollProgress";
 
@@ -173,6 +174,7 @@ export function Scene() {
             <GoldenGlow />
             <Beans reduced={reduced} compact={compact} />
             <LatteMug reduced={reduced} />
+            <Steam compact={compact} reduced={reduced} />
             <IceCubes reduced={reduced} compact={compact} />
           </Rig>
         </Suspense>
